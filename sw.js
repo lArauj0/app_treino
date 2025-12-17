@@ -1,4 +1,4 @@
-const CACHE_NAME = 'treino-tracker-pro-v2';
+const CACHE_NAME = 'treino-tracker-pro-v3';
 const urlsToCache = [ './', './index.html', './manifest.json' ];
 
 self.addEventListener('install', (e) => {
