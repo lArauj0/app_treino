@@ -3,266 +3,387 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    
-    <link rel="manifest" href="manifest.json">
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="theme-color" content="#121212">
-
+    <link rel="manifest" href="manifest.json">
     <title>Treino Tracker Pro</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; text-align: center; margin: 0; padding: 15px; user-select: none; -webkit-tap-highlight-color: transparent;}
+        /* --- ESTILOS GERAIS (DARK MODE) --- */
+        body { font-family: 'Segoe UI', sans-serif; background-color: #121212; color: #e0e0e0; margin: 0; padding: 15px; user-select: none; -webkit-tap-highlight-color: transparent; padding-bottom: 90px; }
         
         /* Dashboard */
         .dashboard {
-            display: flex;
-            justify-content: space-between;
-            gap: 8px;
-            max-width: 400px;
-            margin: 0 auto 20px auto;
-            background: #1e1e1e;
-            padding: 15px;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+            display: flex; justify-content: space-between; gap: 8px; max-width: 400px; margin: 0 auto 20px auto;
+            background: #1e1e1e; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
-
         .stat-box { flex: 1; text-align: center; }
-        .stat-number { font-size: 1.8rem; font-weight: bold; display: block; }
-        .stat-label { font-size: 0.7rem; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-top: 5px;}
-        
+        .stat-number { font-size: 1.5rem; font-weight: bold; display: block; }
+        .stat-label { font-size: 0.6rem; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-top: 5px;}
         .color-green { color: #03dac6; }
         .color-red { color: #cf6679; }
+        .color-purple { color: #bb86fc; }
 
-        /* Navegação do Mês */
-        .month-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 400px;
-            margin: 0 auto 15px auto;
-        }
-
-        .nav-btn {
-            background: #2c2c2c;
-            border: none;
-            color: #fff;
-            font-size: 1.2rem;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        /* Navegação Mês */
+        .month-nav { display: flex; justify-content: space-between; align-items: center; max-width: 400px; margin: 0 auto 15px auto; }
+        .nav-btn { background: #2c2c2c; border: none; color: #fff; font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
         .nav-btn:active { background-color: #444; }
-
-        h3 { margin: 0; color: #bb86fc; font-weight: normal; font-size: 1.2rem; min-width: 150px;}
+        h3 { margin: 0; color: #bb86fc; font-weight: normal; font-size: 1.2rem; }
 
         /* Calendário */
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            max-width: 400px;
-            margin: 0 auto;
-        }
-
-        /* Cabeçalho dos dias da semana */
-        .weekdays {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 8px;
-            max-width: 400px;
-            margin: 0 auto 5px auto;
-            font-size: 0.8rem;
-            color: #666;
-        }
-
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 400px; margin: 0 auto 5px auto; font-size: 0.8rem; color: #666; text-align: center; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 400px; margin: 0 auto; }
+        
         .day {
-            aspect-ratio: 1;
-            background-color: #2c2c2c;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            cursor: pointer;
-            position: relative;
+            aspect-ratio: 1; background-color: #2c2c2c; border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; cursor: pointer; position: relative; transition: 0.1s;
         }
+        .day:active { transform: scale(0.95); }
+        .day.is-today { border: 2px solid #fff; }
         
-        /* Marcador visual para o dia de HOJE */
-        .is-today { border: 2px solid #fff; }
-
-        /* Estados */
         .treinou { background-color: #03dac6; color: #000; font-weight: bold; box-shadow: 0 0 10px rgba(3, 218, 198, 0.4); }
-        .nao-treinou { background-color: #cf6679; color: #000; opacity: 0.7; }
+        .nao-treinou { background-color: #cf6679; color: #000; opacity: 0.8; }
+
+        /* --- FORMULÁRIOS E MODAIS --- */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
+        .modal-content { background: #1e1e1e; width: 85%; max-width: 350px; padding: 25px; border-radius: 15px; border: 1px solid #333; text-align: center; }
         
-        .info { font-size: 0.75rem; color: #666; margin-top: 25px; }
+        input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
+        textarea { resize: vertical; min-height: 80px; }
         
-        .btn-reset { margin-top: 30px; padding: 10px 20px; background: transparent; border: 1px solid #333; color: #666; border-radius: 20px; font-size: 0.8rem;}
+        button.btn-action { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; margin-bottom: 5px; }
+        .btn-primary { background: #bb86fc; color: #000; }
+        .btn-confirm { background: #03dac6; color: #000; }
+        .btn-danger { background: #cf6679; color: #000; }
+        .btn-outline { background: transparent; border: 1px solid #666; color: #888; margin-top: 5px;}
+        .btn-warning { background: #ffb74d; color: #000; }
+
+        /* Lista de Templates */
+        .hidden { display: none; }
+        .template-item { background: #2c2c2c; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .template-info { text-align: left; width: 100%; padding-right: 10px; }
+        .template-obs { font-size: 0.8rem; color: #888; margin-top: 4px; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .template-actions { display: flex; gap: 5px; flex-shrink: 0; }
+        .btn-mini { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
+
+        /* Menu Inferior */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1e1e1e; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #333; z-index: 50; }
+        .nav-item { font-size: 0.75rem; color: #666; text-align: center; cursor: pointer; }
+        .nav-item.active { color: #bb86fc; font-weight: bold; }
+        .nav-icon { font-size: 1.4rem; display: block; margin-bottom: 2px; }
     </style>
 </head>
 <body>
 
-    <div class="dashboard">
-        <div class="stat-box">
-            <span class="stat-number color-green" id="totalDone">0</span>
-            <span class="stat-label">Total Treinos</span>
+    <div id="view-calendar">
+        <div class="dashboard">
+            <div class="stat-box">
+                <span class="stat-number color-green" id="totalDone">0</span>
+                <span class="stat-label">Treinos</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number color-red" id="totalRest">0</span>
+                <span class="stat-label">Descanso</span>
+            </div>
+            <div class="stat-box">
+                <span class="stat-number color-purple" id="successRate">0%</span>
+                <span class="stat-label">Foco</span>
+            </div>
         </div>
-        <div class="stat-box">
-            <span class="stat-number color-red" id="totalRest">0</span>
-            <span class="stat-label">Total Off</span>
+
+        <div class="month-nav">
+            <button class="nav-btn" onclick="changeMonth(-1)">&#10094;</button>
+            <h3 id="monthYear"></h3>
+            <button class="nav-btn" onclick="changeMonth(1)">&#10095;</button>
         </div>
-        <div class="stat-box">
-            <span class="stat-number" id="successRate" style="color: #bb86fc">0%</span>
-            <span class="stat-label">Foco Geral</span>
+
+        <div class="weekdays">
+            <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
+        </div>
+        <div class="calendar-grid" id="calendar"></div>
+        
+        <p style="text-align: center; color: #555; font-size: 0.8rem; margin-top: 20px;">
+            Selecione um dia para registrar o treino.
+        </p>
+    </div>
+
+    <div id="view-templates" class="hidden" style="max-width: 400px; margin: 0 auto;">
+        <h2 style="color: #bb86fc; text-align: center; margin-bottom: 20px;">Gerenciar Treinos</h2>
+        
+        <div style="background: #1e1e1e; padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #333;">
+            <label style="color: #888; font-size: 0.8rem; margin-bottom: 5px; display: block;">Nome do Treino</label>
+            <input type="text" id="tpl-nome" placeholder="Ex: Costas e Bíceps">
+            
+            <label style="color: #888; font-size: 0.8rem; margin-bottom: 5px; display: block;">Exercícios / Observações</label>
+            <textarea id="tpl-obs" placeholder="Ex: &#10;- Barra Fixa 3x10&#10;- Rosca Direta 4x12"></textarea>
+            
+            <button id="btn-save-tpl" class="btn-action btn-primary" onclick="salvarOuAtualizarTemplate()">+ Salvar Treino</button>
+            <button id="btn-cancel-edit" class="btn-action btn-outline hidden" onclick="cancelarEdicao()">Cancelar Edição</button>
+        </div>
+
+        <h4 style="color: #888; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 10px;">Seus Modelos Salvos:</h4>
+        <div id="lista-templates"></div>
+        <div style="height: 50px;"></div> </div>
+
+    <div id="modal-treino" class="modal" onclick="fecharModal(event)">
+        <div class="modal-content">
+            <h3 id="modal-date-title" style="margin-top:0; color:#bb86fc;">Data</h3>
+            <hr style="border: 1px solid #333; margin-bottom: 15px;">
+            
+            <label style="display:block; text-align:left; color:#ccc; margin-bottom:8px; font-size:0.9rem;">Treino realizado:</label>
+            <select id="modal-select">
+                <option value="">Selecione...</option>
+                </select>
+
+            <button class="btn-action btn-confirm" onclick="salvarTreinoDoDia('done')">✅ Confirmar Treino</button>
+            <button class="btn-action btn-danger" onclick="salvarTreinoDoDia('rest')">💤 Marcar Descanso</button>
+            <button class="btn-action btn-outline" onclick="salvarTreinoDoDia('clear')">🗑️ Limpar Registro</button>
         </div>
     </div>
 
-    <div class="month-nav">
-        <button class="nav-btn" onclick="changeMonth(-1)">&#10094;</button>
-        <h3 id="monthYear"></h3>
-        <button class="nav-btn" onclick="changeMonth(1)">&#10095;</button>
-    </div>
-
-    <div class="weekdays">
-        <div>D</div><div>S</div><div>T</div><div>Q</div><div>Q</div><div>S</div><div>S</div>
-    </div>
-
-    <div class="calendar-grid" id="calendar"></div>
-
-    <div class="info">
-        Toque nos dias para alternar status.
-    </div>
-
-    <button class="btn-reset" onclick="resetData()">Zerar Tudo</button>
+    <nav class="bottom-nav">
+        <div class="nav-item active" onclick="navegar('calendar')">
+            <span class="nav-icon">📅</span> Calendário
+        </div>
+        <div class="nav-item" onclick="navegar('templates')">
+            <span class="nav-icon">⚙️</span> Treinos
+        </div>
+    </nav>
 
     <script>
-        const calendarEl = document.getElementById('calendar');
-        const monthYearEl = document.getElementById('monthYear');
-        const totalDoneEl = document.getElementById('totalDone');
-        const totalRestEl = document.getElementById('totalRest');
-        const successRateEl = document.getElementById('successRate');
-        
-        let trainingData = JSON.parse(localStorage.getItem('trainingData')) || {};
-        
-        // Data de visualização (pode ser alterada para navegar)
-        let viewDate = new Date(); 
-        // Data de hoje (fixa, para destacar o dia atual)
+        // --- DADOS GLOBAIS ---
+        let viewDate = new Date();
         const todayDate = new Date();
-
         const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
 
-        function updateStats() {
-            let doneCount = 0;
-            let restCount = 0;
+        let history = JSON.parse(localStorage.getItem('gym_history_v2')) || {};
+        let templates = JSON.parse(localStorage.getItem('gym_templates_v2')) || [];
+        
+        // Controle de Edição
+        let editingId = null;
+        let selectedDayKey = null;
 
-            Object.values(trainingData).forEach(status => {
-                if (status === 'done') doneCount++;
-                if (status === 'rest') restCount++;
-            });
+        // --- INICIALIZAÇÃO ---
+        renderCalendar();
+        renderTemplates();
+        updateStats();
 
-            totalDoneEl.innerText = doneCount;
-            totalRestEl.innerText = restCount;
-
-            const totalEvents = doneCount + restCount;
-            let rate = 0;
-            if (totalEvents > 0) {
-                rate = Math.round((doneCount / totalEvents) * 100);
-            }
-            successRateEl.innerText = rate + "%";
-        }
-
-        function changeMonth(step) {
-            // Avança ou recua o mês da data de visualização
-            viewDate.setMonth(viewDate.getMonth() + step);
-            loadCalendar();
-        }
-
-        function loadCalendar() {
-            calendarEl.innerHTML = '';
+        // --- NAVEGAÇÃO ---
+        function navegar(page) {
+            document.getElementById('view-calendar').classList.add('hidden');
+            document.getElementById('view-templates').classList.add('hidden');
             
+            if (page === 'calendar') document.getElementById('view-calendar').classList.remove('hidden');
+            if (page === 'templates') document.getElementById('view-templates').classList.remove('hidden');
+
+            const items = document.querySelectorAll('.nav-item');
+            items[0].classList.toggle('active', page === 'calendar');
+            items[1].classList.toggle('active', page === 'templates');
+        }
+
+        // --- LÓGICA DE TEMPLATES (CRUD) ---
+        function salvarOuAtualizarTemplate() {
+            const nome = document.getElementById('tpl-nome').value;
+            const obs = document.getElementById('tpl-obs').value;
+
+            if(!nome) return alert("Digite pelo menos o nome do treino!");
+
+            if (editingId) {
+                // MODO EDIÇÃO
+                const index = templates.findIndex(t => t.id === editingId);
+                if (index !== -1) {
+                    templates[index].nome = nome;
+                    templates[index].obs = obs;
+                    alert("Treino atualizado!");
+                }
+            } else {
+                // MODO CRIAÇÃO
+                templates.push({
+                    id: Date.now(),
+                    nome: nome,
+                    obs: obs
+                });
+                alert("Treino criado!");
+            }
+
+            localStorage.setItem('gym_templates_v2', JSON.stringify(templates));
+            
+            // Limpa form
+            cancelarEdicao();
+            renderTemplates();
+        }
+
+        function prepararEdicao(id) {
+            const treino = templates.find(t => t.id === id);
+            if (!treino) return;
+
+            // Preenche o formulário
+            document.getElementById('tpl-nome').value = treino.nome;
+            document.getElementById('tpl-obs').value = treino.obs || '';
+            
+            // Muda estado para edição
+            editingId = id;
+            document.getElementById('btn-save-tpl').innerText = "Atualizar Treino";
+            document.getElementById('btn-save-tpl').classList.replace('btn-primary', 'btn-warning');
+            document.getElementById('btn-cancel-edit').classList.remove('hidden');
+            
+            // Rola a tela para o topo
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function cancelarEdicao() {
+            editingId = null;
+            document.getElementById('tpl-nome').value = '';
+            document.getElementById('tpl-obs').value = '';
+            
+            document.getElementById('btn-save-tpl').innerText = "+ Salvar Treino";
+            document.getElementById('btn-save-tpl').classList.replace('btn-warning', 'btn-primary');
+            document.getElementById('btn-cancel-edit').classList.add('hidden');
+        }
+
+        function deletarTemplate(id) {
+            if(confirm("Tem certeza que deseja apagar este treino?")) {
+                templates = templates.filter(t => t.id !== id);
+                localStorage.setItem('gym_templates_v2', JSON.stringify(templates));
+                renderTemplates();
+                // Se estava editando ele, cancela
+                if (editingId === id) cancelarEdicao();
+            }
+        }
+
+        function renderTemplates() {
+            const div = document.getElementById('lista-templates');
+            div.innerHTML = '';
+
+            if (templates.length === 0) {
+                div.innerHTML = '<p style="text-align:center; color:#555;">Nenhum treino cadastrado.</p>';
+                return;
+            }
+
+            templates.forEach(t => {
+                // Cria o item da lista
+                div.innerHTML += `
+                    <div class="template-item">
+                        <div class="template-info">
+                            <strong style="color:white; font-size:1.1rem;">${t.nome}</strong>
+                            <div class="template-obs">${t.obs ? t.obs : '<i>Sem observações</i>'}</div>
+                        </div>
+                        <div class="template-actions">
+                            <button class="btn-mini btn-warning" onclick="prepararEdicao(${t.id})">✎</button>
+                            <button class="btn-mini btn-danger" onclick="deletarTemplate(${t.id})">X</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- LÓGICA DO CALENDÁRIO ---
+        function changeMonth(step) {
+            viewDate.setMonth(viewDate.getMonth() + step);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const grid = document.getElementById('calendar');
+            const title = document.getElementById('monthYear');
+            grid.innerHTML = '';
+
             const year = viewDate.getFullYear();
             const month = viewDate.getMonth();
-            
-            monthYearEl.innerText = `${monthNames[month]} ${year}`;
+            title.innerText = `${monthNames[month]} ${year}`;
 
-            // Primeiro dia do mês (para saber onde começar na semana)
             const firstDayIndex = new Date(year, month, 1).getDay();
-            // Total de dias no mês
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
-            // Adiciona espaços vazios antes do dia 1
-            for (let i = 0; i < firstDayIndex; i++) {
-                const emptyDiv = document.createElement('div');
-                calendarEl.appendChild(emptyDiv);
-            }
+            for (let i = 0; i < firstDayIndex; i++) grid.appendChild(document.createElement('div'));
 
             for (let i = 1; i <= daysInMonth; i++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.classList.add('day');
                 dayDiv.innerText = i;
                 
-                // Chave única: ANO-MÊS-DIA (ex: 2023-9-25)
-                // Nota: O mês no JS é 0-11, mas mantemos assim na chave para consistência
                 const dayKey = `${year}-${month}-${i}`;
 
-                // Verifica se é HOJE para destacar borda
                 if (i === todayDate.getDate() && month === todayDate.getMonth() && year === todayDate.getFullYear()) {
                     dayDiv.classList.add('is-today');
                 }
 
-                // Carrega status salvo
-                if (trainingData[dayKey] === 'done') dayDiv.classList.add('treinou');
-                if (trainingData[dayKey] === 'rest') dayDiv.classList.add('nao-treinou');
+                if (history[dayKey]) {
+                    if (history[dayKey] === 'REST') dayDiv.classList.add('nao-treinou');
+                    else dayDiv.classList.add('treinou');
+                }
 
-                dayDiv.onclick = () => {
-                    if (!dayDiv.classList.contains('treinou') && !dayDiv.classList.contains('nao-treinou')) {
-                        dayDiv.classList.add('treinou');
-                        saveData(dayKey, 'done');
-                    } else if (dayDiv.classList.contains('treinou')) {
-                        dayDiv.classList.remove('treinou');
-                        dayDiv.classList.add('nao-treinou');
-                        saveData(dayKey, 'rest');
-                    } else {
-                        dayDiv.classList.remove('nao-treinou');
-                        saveData(dayKey, null);
-                    }
-                    updateStats();
-                };
-                calendarEl.appendChild(dayDiv);
+                dayDiv.onclick = () => abrirModal(dayKey, i);
+                grid.appendChild(dayDiv);
             }
-            updateStats();
         }
 
-        function saveData(key, status) {
-            if (status) {
-                trainingData[key] = status;
+        function updateStats() {
+            let done = 0;
+            let rest = 0;
+            Object.values(history).forEach(val => {
+                if (val === 'REST') rest++;
+                else done++;
+            });
+
+            document.getElementById('totalDone').innerText = done;
+            document.getElementById('totalRest').innerText = rest;
+            const total = done + rest;
+            const rate = total > 0 ? Math.round((done / total) * 100) : 0;
+            document.getElementById('successRate').innerText = rate + "%";
+        }
+
+        // --- MODAL ---
+        function abrirModal(key, day) {
+            selectedDayKey = key;
+            const modal = document.getElementById('modal-treino');
+            const select = document.getElementById('modal-select');
+            
+            // Popula select
+            select.innerHTML = '<option value="">-- Selecione --</option>';
+            templates.forEach(t => {
+                select.innerHTML += `<option value="${t.nome}">${t.nome}</option>`;
+            });
+
+            // Título formatado
+            const parts = key.split('-');
+            const displayMonth = parseInt(parts[1]) + 1;
+            document.getElementById('modal-date-title').innerText = `Dia ${parts[2]}/${displayMonth}`;
+
+            // Seleciona valor atual
+            if (history[key] && history[key] !== 'REST') {
+                select.value = history[key];
             } else {
-                delete trainingData[key];
+                select.value = "";
             }
-            localStorage.setItem('trainingData', JSON.stringify(trainingData));
+
+            modal.style.display = 'flex';
         }
 
-        function resetData() {
-            if(confirm("Deseja apagar TODO o histórico?")) {
-                localStorage.clear();
-                trainingData = {};
-                // Reseta a visualização para hoje
-                viewDate = new Date();
-                loadCalendar();
-                updateStats();
-            }
+        function fecharModal(e) {
+            if (e.target.id === 'modal-treino') document.getElementById('modal-treino').style.display = 'none';
         }
 
-        loadCalendar();
+        function salvarTreinoDoDia(tipo) {
+            const select = document.getElementById('modal-select');
+            
+            if (tipo === 'clear') {
+                delete history[selectedDayKey];
+            } else if (tipo === 'rest') {
+                history[selectedDayKey] = 'REST';
+            } else if (tipo === 'done') {
+                if(select.value === "") return alert("Selecione qual treino você fez!");
+                history[selectedDayKey] = select.value;
+            }
 
+            localStorage.setItem('gym_history_v2', JSON.stringify(history));
+            updateStats();
+            renderCalendar();
+            document.getElementById('modal-treino').style.display = 'none';
+        }
+
+        // --- SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js')
-            .then(() => console.log('Service Worker Registrado!'))
-            .catch((error) => console.log('Falha ao registrar:', error));
+            navigator.serviceWorker.register('./sw.js');
         }
     </script>
 </body>
