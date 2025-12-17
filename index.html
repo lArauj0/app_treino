@@ -16,7 +16,7 @@
             background: #1e1e1e; padding: 15px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.3);
         }
         .stat-box { flex: 1; text-align: center; }
-        .stat-number { font-size: 1.5rem; font-weight: bold; display: block; }
+        .stat-number { font-size: 1.4rem; font-weight: bold; display: block; }
         .stat-label { font-size: 0.6rem; text-transform: uppercase; color: #888; letter-spacing: 1px; margin-top: 5px;}
         .color-green { color: #03dac6; }
         .color-red { color: #cf6679; }
@@ -29,27 +29,52 @@
         h3 { margin: 0; color: #bb86fc; font-weight: normal; font-size: 1.2rem; }
 
         /* Calendário */
-        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 400px; margin: 0 auto 5px auto; font-size: 0.8rem; color: #666; text-align: center; }
-        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px; max-width: 400px; margin: 0 auto; }
+        .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; max-width: 400px; margin: 0 auto 5px auto; font-size: 0.8rem; color: #666; text-align: center; }
+        .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; max-width: 400px; margin: 0 auto; }
         
         .day {
-            aspect-ratio: 1; background-color: #2c2c2c; border-radius: 8px;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 1rem; cursor: pointer; position: relative; transition: 0.1s;
+            aspect-ratio: 1; background-color: #2c2c2c; border-radius: 6px;
+            display: flex; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 5px;
+            font-size: 0.9rem; cursor: pointer; position: relative; transition: 0.1s; overflow: hidden;
         }
         .day:active { transform: scale(0.95); }
-        .day.is-today { border: 2px solid #fff; }
+        .day.is-today { border: 2px solid #fff; box-sizing: border-box; }
         
-        .treinou { background-color: #03dac6; color: #000; font-weight: bold; box-shadow: 0 0 10px rgba(3, 218, 198, 0.4); }
-        .nao-treinou { background-color: #cf6679; color: #000; opacity: 0.8; }
+        /* Estilo do texto do treino DENTRO do dia */
+        .day-workout-name {
+            font-size: 0.6rem;
+            line-height: 1.1;
+            margin-top: 2px;
+            text-align: center;
+            width: 95%;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-weight: normal;
+        }
 
-        /* --- FORMULÁRIOS E MODAIS --- */
+        .treinou { background-color: #03dac6; color: #000; font-weight: bold; box-shadow: 0 0 5px rgba(3, 218, 198, 0.3); }
+        .nao-treinou { background-color: #cf6679; color: #000; opacity: 0.9; }
+
+        /* Lista de Histórico (Abaixo do Calendário) */
+        .history-list-container { max-width: 400px; margin: 25px auto 0 auto; }
+        .history-item { 
+            background: #1e1e1e; padding: 12px; margin-bottom: 8px; border-radius: 8px; 
+            display: flex; justify-content: space-between; align-items: center; border-left: 4px solid #333;
+        }
+        .h-date { color: #888; font-size: 0.8rem; margin-right: 10px; min-width: 40px;}
+        .h-info { text-align: left; flex: 1; }
+        .h-name { display: block; font-weight: bold; color: white; font-size: 0.95rem; }
+        .h-obs { display: block; font-size: 0.75rem; color: #666; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px; }
+        
+        .border-green { border-left-color: #03dac6; }
+        .border-red { border-left-color: #cf6679; }
+
+        /* Modais e Forms */
         .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 1000; justify-content: center; align-items: center; backdrop-filter: blur(5px); }
         .modal-content { background: #1e1e1e; width: 85%; max-width: 350px; padding: 25px; border-radius: 15px; border: 1px solid #333; text-align: center; }
         
         input, select, textarea { width: 100%; padding: 12px; margin-bottom: 10px; background: #2c2c2c; border: 1px solid #444; color: white; border-radius: 8px; box-sizing: border-box; font-size: 16px; font-family: inherit; }
-        textarea { resize: vertical; min-height: 80px; }
-        
         button.btn-action { width: 100%; padding: 12px; border-radius: 8px; border: none; font-weight: bold; cursor: pointer; font-size: 1rem; margin-bottom: 5px; }
         .btn-primary { background: #bb86fc; color: #000; }
         .btn-confirm { background: #03dac6; color: #000; }
@@ -57,12 +82,10 @@
         .btn-outline { background: transparent; border: 1px solid #666; color: #888; margin-top: 5px;}
         .btn-warning { background: #ffb74d; color: #000; }
 
-        /* Lista de Templates */
+        /* Lista Templates */
         .hidden { display: none; }
         .template-item { background: #2c2c2c; padding: 15px; margin-bottom: 10px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .template-info { text-align: left; width: 100%; padding-right: 10px; }
-        .template-obs { font-size: 0.8rem; color: #888; margin-top: 4px; white-space: pre-wrap; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        .template-actions { display: flex; gap: 5px; flex-shrink: 0; }
+        .template-actions { display: flex; gap: 5px; }
         .btn-mini { padding: 8px 12px; border: none; border-radius: 6px; cursor: pointer; font-weight: bold; }
 
         /* Menu Inferior */
@@ -101,9 +124,12 @@
         </div>
         <div class="calendar-grid" id="calendar"></div>
         
-        <p style="text-align: center; color: #555; font-size: 0.8rem; margin-top: 20px;">
-            Selecione um dia para registrar o treino.
-        </p>
+        <div class="history-list-container">
+            <h4 style="color: #666; font-weight: normal; font-size: 0.9rem; margin-bottom: 10px; border-bottom: 1px solid #333; padding-bottom: 5px;">
+                Histórico deste mês
+            </h4>
+            <div id="history-list"></div>
+        </div>
     </div>
 
     <div id="view-templates" class="hidden" style="max-width: 400px; margin: 0 auto;">
@@ -111,18 +137,18 @@
         
         <div style="background: #1e1e1e; padding: 15px; border-radius: 12px; margin-bottom: 25px; border: 1px solid #333;">
             <label style="color: #888; font-size: 0.8rem; margin-bottom: 5px; display: block;">Nome do Treino</label>
-            <input type="text" id="tpl-nome" placeholder="Ex: Costas e Bíceps">
-            
-            <label style="color: #888; font-size: 0.8rem; margin-bottom: 5px; display: block;">Exercícios / Observações</label>
-            <textarea id="tpl-obs" placeholder="Ex: &#10;- Barra Fixa 3x10&#10;- Rosca Direta 4x12"></textarea>
+            <input type="text" id="tpl-nome" placeholder="Ex: Peito A">
+            <label style="color: #888; font-size: 0.8rem; margin-bottom: 5px; display: block;">Detalhes / Obs</label>
+            <textarea id="tpl-obs" placeholder="Ex: Supino 4x10..."></textarea>
             
             <button id="btn-save-tpl" class="btn-action btn-primary" onclick="salvarOuAtualizarTemplate()">+ Salvar Treino</button>
-            <button id="btn-cancel-edit" class="btn-action btn-outline hidden" onclick="cancelarEdicao()">Cancelar Edição</button>
+            <button id="btn-cancel-edit" class="btn-action btn-outline hidden" onclick="cancelarEdicao()">Cancelar</button>
         </div>
 
-        <h4 style="color: #888; text-transform: uppercase; font-size: 0.8rem; margin-bottom: 10px;">Seus Modelos Salvos:</h4>
+        <h4 style="color: #888; text-transform: uppercase; font-size: 0.8rem;">Seus Modelos:</h4>
         <div id="lista-templates"></div>
-        <div style="height: 50px;"></div> </div>
+        <div style="height: 50px;"></div>
+    </div>
 
     <div id="modal-treino" class="modal" onclick="fecharModal(event)">
         <div class="modal-content">
@@ -134,9 +160,9 @@
                 <option value="">Selecione...</option>
                 </select>
 
-            <button class="btn-action btn-confirm" onclick="salvarTreinoDoDia('done')">✅ Confirmar Treino</button>
-            <button class="btn-action btn-danger" onclick="salvarTreinoDoDia('rest')">💤 Marcar Descanso</button>
-            <button class="btn-action btn-outline" onclick="salvarTreinoDoDia('clear')">🗑️ Limpar Registro</button>
+            <button class="btn-action btn-confirm" onclick="salvarTreinoDoDia('done')">✅ Confirmar</button>
+            <button class="btn-action btn-danger" onclick="salvarTreinoDoDia('rest')">💤 Descanso</button>
+            <button class="btn-action btn-outline" onclick="salvarTreinoDoDia('clear')">🗑️ Limpar</button>
         </div>
     </div>
 
@@ -150,7 +176,7 @@
     </nav>
 
     <script>
-        // --- DADOS GLOBAIS ---
+        // --- DADOS ---
         let viewDate = new Date();
         const todayDate = new Date();
         const monthNames = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
@@ -158,7 +184,6 @@
         let history = JSON.parse(localStorage.getItem('gym_history_v2')) || {};
         let templates = JSON.parse(localStorage.getItem('gym_templates_v2')) || [];
         
-        // Controle de Edição
         let editingId = null;
         let selectedDayKey = null;
 
@@ -180,34 +205,26 @@
             items[1].classList.toggle('active', page === 'templates');
         }
 
-        // --- LÓGICA DE TEMPLATES (CRUD) ---
+        // --- CRUD TEMPLATES ---
         function salvarOuAtualizarTemplate() {
             const nome = document.getElementById('tpl-nome').value;
             const obs = document.getElementById('tpl-obs').value;
 
-            if(!nome) return alert("Digite pelo menos o nome do treino!");
+            if(!nome) return alert("Digite o nome do treino!");
 
             if (editingId) {
-                // MODO EDIÇÃO
                 const index = templates.findIndex(t => t.id === editingId);
                 if (index !== -1) {
                     templates[index].nome = nome;
                     templates[index].obs = obs;
-                    alert("Treino atualizado!");
+                    alert("Atualizado!");
                 }
             } else {
-                // MODO CRIAÇÃO
-                templates.push({
-                    id: Date.now(),
-                    nome: nome,
-                    obs: obs
-                });
-                alert("Treino criado!");
+                templates.push({ id: Date.now(), nome: nome, obs: obs });
+                alert("Criado!");
             }
 
             localStorage.setItem('gym_templates_v2', JSON.stringify(templates));
-            
-            // Limpa form
             cancelarEdicao();
             renderTemplates();
         }
@@ -215,18 +232,12 @@
         function prepararEdicao(id) {
             const treino = templates.find(t => t.id === id);
             if (!treino) return;
-
-            // Preenche o formulário
             document.getElementById('tpl-nome').value = treino.nome;
             document.getElementById('tpl-obs').value = treino.obs || '';
-            
-            // Muda estado para edição
             editingId = id;
-            document.getElementById('btn-save-tpl').innerText = "Atualizar Treino";
+            document.getElementById('btn-save-tpl').innerText = "Atualizar";
             document.getElementById('btn-save-tpl').classList.replace('btn-primary', 'btn-warning');
             document.getElementById('btn-cancel-edit').classList.remove('hidden');
-            
-            // Rola a tela para o topo
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
@@ -234,18 +245,16 @@
             editingId = null;
             document.getElementById('tpl-nome').value = '';
             document.getElementById('tpl-obs').value = '';
-            
             document.getElementById('btn-save-tpl').innerText = "+ Salvar Treino";
             document.getElementById('btn-save-tpl').classList.replace('btn-warning', 'btn-primary');
             document.getElementById('btn-cancel-edit').classList.add('hidden');
         }
 
         function deletarTemplate(id) {
-            if(confirm("Tem certeza que deseja apagar este treino?")) {
+            if(confirm("Apagar?")) {
                 templates = templates.filter(t => t.id !== id);
                 localStorage.setItem('gym_templates_v2', JSON.stringify(templates));
                 renderTemplates();
-                // Se estava editando ele, cancela
                 if (editingId === id) cancelarEdicao();
             }
         }
@@ -253,19 +262,16 @@
         function renderTemplates() {
             const div = document.getElementById('lista-templates');
             div.innerHTML = '';
-
             if (templates.length === 0) {
-                div.innerHTML = '<p style="text-align:center; color:#555;">Nenhum treino cadastrado.</p>';
+                div.innerHTML = '<p style="text-align:center; color:#555;">Sem treinos cadastrados.</p>';
                 return;
             }
-
             templates.forEach(t => {
-                // Cria o item da lista
                 div.innerHTML += `
                     <div class="template-item">
-                        <div class="template-info">
-                            <strong style="color:white; font-size:1.1rem;">${t.nome}</strong>
-                            <div class="template-obs">${t.obs ? t.obs : '<i>Sem observações</i>'}</div>
+                        <div style="flex:1">
+                            <strong style="color:white;">${t.nome}</strong>
+                            <div style="font-size:0.8rem; color:#888; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; width:180px;">${t.obs || ''}</div>
                         </div>
                         <div class="template-actions">
                             <button class="btn-mini btn-warning" onclick="prepararEdicao(${t.id})">✎</button>
@@ -276,7 +282,7 @@
             });
         }
 
-        // --- LÓGICA DO CALENDÁRIO ---
+        // --- CALENDÁRIO ---
         function changeMonth(step) {
             viewDate.setMonth(viewDate.getMonth() + step);
             renderCalendar();
@@ -294,29 +300,84 @@
             const firstDayIndex = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
 
+            // Células vazias
             for (let i = 0; i < firstDayIndex; i++) grid.appendChild(document.createElement('div'));
 
+            // Dias
             for (let i = 1; i <= daysInMonth; i++) {
                 const dayDiv = document.createElement('div');
                 dayDiv.classList.add('day');
-                dayDiv.innerText = i;
                 
                 const dayKey = `${year}-${month}-${i}`;
+                let innerHTML = `<span style="font-weight:bold">${i}</span>`;
 
                 if (i === todayDate.getDate() && month === todayDate.getMonth() && year === todayDate.getFullYear()) {
                     dayDiv.classList.add('is-today');
                 }
 
                 if (history[dayKey]) {
-                    if (history[dayKey] === 'REST') dayDiv.classList.add('nao-treinou');
-                    else dayDiv.classList.add('treinou');
+                    if (history[dayKey] === 'REST') {
+                        dayDiv.classList.add('nao-treinou');
+                        innerHTML += `<span class="day-workout-name">OFF</span>`;
+                    } else {
+                        dayDiv.classList.add('treinou');
+                        // Aqui está o truque: mostra o nome do treino dentro do quadrado
+                        innerHTML += `<span class="day-workout-name">${history[dayKey]}</span>`;
+                    }
                 }
 
+                dayDiv.innerHTML = innerHTML;
                 dayDiv.onclick = () => abrirModal(dayKey, i);
                 grid.appendChild(dayDiv);
             }
+            
+            // Renderiza também a lista abaixo do calendário
+            renderHistoryList(year, month);
         }
 
+        function renderHistoryList(year, month) {
+            const listDiv = document.getElementById('history-list');
+            listDiv.innerHTML = '';
+
+            // Filtra logs do mês atual
+            const entries = Object.entries(history).filter(([key, value]) => {
+                const parts = key.split('-');
+                return parseInt(parts[0]) === year && parseInt(parts[1]) === month;
+            });
+
+            // Ordena do mais recente para o antigo
+            entries.sort((a, b) => {
+                const dayA = parseInt(a[0].split('-')[2]);
+                const dayB = parseInt(b[0].split('-')[2]);
+                return dayB - dayA;
+            });
+
+            if (entries.length === 0) {
+                listDiv.innerHTML = '<p style="text-align:center; color:#444; font-size:0.8rem;">Nenhum registro este mês.</p>';
+                return;
+            }
+
+            entries.forEach(([key, value]) => {
+                const day = key.split('-')[2];
+                const isRest = value === 'REST';
+                
+                // Tenta achar detalhes do treino para mostrar obs na lista (se houver)
+                const tpl = templates.find(t => t.nome === value);
+                const obs = tpl ? tpl.obs : '';
+
+                listDiv.innerHTML += `
+                    <div class="history-item ${isRest ? 'border-red' : 'border-green'}">
+                        <div class="h-date">${day}/${month+1}</div>
+                        <div class="h-info">
+                            <span class="h-name" style="${isRest ? 'color:#cf6679' : 'color:#03dac6'}">${isRest ? 'Descanso / Off' : value}</span>
+                            ${!isRest && obs ? `<span class="h-obs">${obs}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // --- STATS ---
         function updateStats() {
             let done = 0;
             let rest = 0;
@@ -338,24 +399,19 @@
             const modal = document.getElementById('modal-treino');
             const select = document.getElementById('modal-select');
             
-            // Popula select
             select.innerHTML = '<option value="">-- Selecione --</option>';
             templates.forEach(t => {
                 select.innerHTML += `<option value="${t.nome}">${t.nome}</option>`;
             });
 
-            // Título formatado
             const parts = key.split('-');
-            const displayMonth = parseInt(parts[1]) + 1;
-            document.getElementById('modal-date-title').innerText = `Dia ${parts[2]}/${displayMonth}`;
+            document.getElementById('modal-date-title').innerText = `Dia ${parts[2]}/${parseInt(parts[1])+1}`;
 
-            // Seleciona valor atual
             if (history[key] && history[key] !== 'REST') {
                 select.value = history[key];
             } else {
                 select.value = "";
             }
-
             modal.style.display = 'flex';
         }
 
@@ -371,20 +427,18 @@
             } else if (tipo === 'rest') {
                 history[selectedDayKey] = 'REST';
             } else if (tipo === 'done') {
-                if(select.value === "") return alert("Selecione qual treino você fez!");
+                if(select.value === "") return alert("Escolha o treino!");
                 history[selectedDayKey] = select.value;
             }
 
             localStorage.setItem('gym_history_v2', JSON.stringify(history));
             updateStats();
-            renderCalendar();
+            renderCalendar(); // Isso atualiza tanto o grid quanto a lista
             document.getElementById('modal-treino').style.display = 'none';
         }
 
-        // --- SERVICE WORKER ---
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('./sw.js');
-        }
+        // SW
+        if ('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js');
     </script>
 </body>
 </html>
