@@ -1,4 +1,6 @@
-// sw.js - Service Worker simples
+const CACHE_NAME = 'treino-tracker-pro-v2';
+const urlsToCache = [ './', './index.html', './manifest.json' ];
+
 self.addEventListener('install', (e) => {
   e.waitUntil(
     caches.open('treino-store').then((cache) => cache.addAll([
